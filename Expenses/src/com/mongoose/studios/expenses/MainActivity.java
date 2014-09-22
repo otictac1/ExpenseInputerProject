@@ -33,7 +33,7 @@ public class MainActivity extends Activity {
 						android.R.color.transparent)));
 		getActionBar().setBackgroundDrawable(
 				new ColorDrawable(getResources().getColor(
-						android.R.color.holo_orange_light)));
+						android.R.color.holo_blue_dark)));
 
 		if (szImei.equals("99000259209404")) {
 			phoneNumber = "4155285867";

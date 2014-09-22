@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Expenses</string>
+    <string name="hello_world">Hello world!</string>
+    <string name="valueHint">Enter Amount</string>
+    <string name="vendorHint">Enter Vendor</string>
+
+    <string-array name="financial_array">
+        <item>Capital One</item>
+        <item>UTFCU</item>
+        <item>UTFCU Deposit</item>
+        <item>Chase</item>
+    </string-array>
+    <string-array name="category_array">
+        <item>Car - Insurance</item>
+        <item>Car - Payment</item>
+        <item>Car - Upkeep</item>
+        <item>Car - Gas</item>
+        <item>Cell Phone</item>
+        <item>Clothes</item>
+        <item>Entertainment</item>
+        <item>Food - Dining Out</item>
+        <item>Food - Groceries</item>
+        <item>Food - Milk</item>
+        <item>Giving - Charity</item>
+        <item>Giving - Presents</item>
+        <item>House - Mortgage</item>
+        <item>House - Upkeep</item>
+        <item>House - Utilities</item>
+        <item>Medical - Dentist</item>
+        <item>Medical - Vet</item>
+        <item>Miscellaneous</item>
+        <item>Savings</item>
+    </string-array>
+    
+    <string name="BalanceButton">Check Balance</string>
+    <string name="SubmitButton">Submit Expense</string>
+
+</resources>

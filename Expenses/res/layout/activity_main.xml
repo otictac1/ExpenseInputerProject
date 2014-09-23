@@ -39,7 +39,7 @@
             android:hint="@string/vendorHint" />
 
         <ImageButton
-            android:id="@+id/imageButton1"
+            android:id="@+id/favoritesIB"
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_marginLeft="10dp"

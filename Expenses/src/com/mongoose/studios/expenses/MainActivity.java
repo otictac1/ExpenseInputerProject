@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
@@ -17,9 +18,9 @@ public class MainActivity extends Activity {
 	private Button balanceButton, submitButton;
 	private Spinner financialInstitution, categorySpinner;
 	private EditText amountToEnter, vendorToEnter;
+	private ImageButton favoritesButton;
 	String szImei;
 	String phoneNumber;
-	
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -69,14 +70,26 @@ public class MainActivity extends Activity {
 				String message = String.valueOf(financialInstitution
 						.getSelectedItem())
 						+ ","
-						+ amountToEnter.getText().toString()
+						+ amountToEnter.getText().toString().trim()
 						+ ","
-						+ vendorToEnter.getText().toString()
+						+ vendorToEnter.getText().toString().trim()
 						+ ","
 						+ String.valueOf(categorySpinner.getSelectedItem());
 				sendSMS(message);
 				amountToEnter.setText(null);
 				vendorToEnter.setText(null);
+				financialInstitution.setSelection(0);
+				categorySpinner.setSelection(0);
+			}
+		});
+
+		favoritesButton = (ImageButton) findViewById(R.id.favoritesIB);
+		favoritesButton.setOnClickListener(new View.OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				Toast.makeText(getApplicationContext(),
+						"Favorites Button Pushed", Toast.LENGTH_LONG).show();
 			}
 		});
 

@@ -1,11 +1,14 @@
 package com.mongoose.studios.expenses;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
+import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -13,7 +16,8 @@ import android.widget.ImageButton;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements View.OnClickListener,
+		DialogInterface.OnClickListener {
 
 	private Button balanceButton, submitButton;
 	private Spinner financialInstitution, categorySpinner;
@@ -21,6 +25,7 @@ public class MainActivity extends Activity {
 	private ImageButton favoritesButton;
 	String szImei;
 	String phoneNumber;
+	AlertDialog ad;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -43,8 +48,6 @@ public class MainActivity extends Activity {
 			phoneNumber = "4152374146";
 			setTitle("Hello LJ! I love you! Expense Please: ");
 		}
-
-		Log.i("Device ID", "MyDeviceID is " + szImei);
 
 		financialInstitution = (Spinner) findViewById(R.id.financialInstitutionSpinner);
 		categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
@@ -84,14 +87,7 @@ public class MainActivity extends Activity {
 		});
 
 		favoritesButton = (ImageButton) findViewById(R.id.favoritesIB);
-		favoritesButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				Toast.makeText(getApplicationContext(),
-						"Favorites Button Pushed", Toast.LENGTH_LONG).show();
-			}
-		});
+		favoritesButton.setOnClickListener(this);
 
 	}
 
@@ -115,6 +111,45 @@ public class MainActivity extends Activity {
 					"SMS faild, please try again.", Toast.LENGTH_LONG).show();
 			e.printStackTrace();
 		}
+
+	}
+
+	@Override
+	public void onClick(View v) {
+		final String[] favorites = { "Kroger", "Weigel's", "Target", "Amazon" , "Chick-Fil-A" , "Food City" , "Lowes" 
+				, "Subway" , "Shell" , "Wendy's" , "Stefano's" , "Trader Joe's" , "Regal Cinemas", "Ingles" };
+
+		AlertDialog.Builder b = new Builder(this);
+		b.setTitle("Favorite Places to Shop");
+		b.setNegativeButton("Cancel", this);
+		b.setCancelable(true);
+		b.setItems(favorites, new OnClickListener() {
+
+			@Override
+			public void onClick(DialogInterface dialog, int which) {
+
+				dialog.dismiss();
+
+				vendorToEnter.setText(favorites[which]);
+
+			}
+
+		});
+
+		b.show();
+
+		/*
+		 * AlertDialog ad = new AlertDialog.Builder(this) .setItems(favorites,
+		 * this) .setTitle("Favorites Menu")
+		 * .setMessage("Choose one of your favorites") .setCancelable(true)
+		 * .setPositiveButton("Yes", this) .setNegativeButton("No", this)
+		 * .create(); ad.show();
+		 */
+	}
+
+	@Override
+	public void onClick(DialogInterface dialog, int which) {
+		dialog.cancel();
 
 	}
 }

@@ -131,6 +131,23 @@ public class MainActivity extends Activity implements View.OnClickListener,
 				dialog.dismiss();
 
 				vendorToEnter.setText(favorites[which]);
+				switch(which){
+				case 0: case 5: case 11: case 13:
+					categorySpinner.setSelection(8, true);
+					break;
+				case 1: case 8:
+					categorySpinner.setSelection(3,true);
+					break;
+				case 4: case 7: case 9: case 10:
+					categorySpinner.setSelection(7, true);
+					break;
+				case 12:
+					categorySpinner.setSelection(6,true);
+					break;
+				
+				
+				}
+				
 
 			}
 

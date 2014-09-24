@@ -92,19 +92,10 @@ public class MainActivity extends Activity implements View.OnClickListener,
 	}
 
 	protected void sendSMS(String message) {
-		String phoneNumber;
-
-		if (szImei.equals("990002592094047")) {
-			phoneNumber = "4155285867";
-			setTitle("Hello Bradley");
-		} else {
-			phoneNumber = "4152374146";
-			setTitle("Hello Laura!  I love you!");
-		}
 		try {
 			SmsManager smsManager = SmsManager.getDefault();
 			smsManager.sendTextMessage(phoneNumber, null, message, null, null);
-			Toast.makeText(getApplicationContext(), "SMS sent.",
+			Toast.makeText(getApplicationContext(), "Request Sent!",
 					Toast.LENGTH_LONG).show();
 		} catch (Exception e) {
 			Toast.makeText(getApplicationContext(),
@@ -116,11 +107,17 @@ public class MainActivity extends Activity implements View.OnClickListener,
 
 	@Override
 	public void onClick(View v) {
-		final String[] favorites = { "Kroger", "Weigel's", "Target", "Amazon" , "Chick-Fil-A" , "Food City" , "Lowes" 
-				, "Subway" , "Shell" , "Wendy's" , "Stefano's" , "Trader Joe's" , "Regal Cinemas", "Ingles" };
+		final String[] favorites = { "Kroger", "Weigel's", "Target", "Amazon",
+				"Chick-Fil-A", "Food City", "Lowes", "Subway", "Shell",
+				"Wendy's", "Stefano's", "Trader Joe's", "Regal Cinemas",
+				"Ingles" };
 
 		AlertDialog.Builder b = new Builder(this);
 		b.setTitle("Favorite Places to Shop");
+
+		// Need to add an icon
+		b.setIcon(null);
+
 		b.setNegativeButton("Cancel", this);
 		b.setCancelable(true);
 		b.setItems(favorites, new OnClickListener() {
@@ -131,26 +128,31 @@ public class MainActivity extends Activity implements View.OnClickListener,
 				dialog.dismiss();
 
 				vendorToEnter.setText(favorites[which]);
-				switch(which){
-				case 0: case 5: case 11: case 13:
+				switch (which) {
+				case 0:
+				case 5:
+				case 11:
+				case 13:
 					categorySpinner.setSelection(8, true);
 					break;
-				case 1: case 8:
-					categorySpinner.setSelection(3,true);
+				case 1:
+				case 8:
+					categorySpinner.setSelection(3, true);
 					break;
-				case 4: case 7: case 9: case 10:
+				case 4:
+				case 7:
+				case 9:
+				case 10:
 					categorySpinner.setSelection(7, true);
 					break;
 				case 12:
-					categorySpinner.setSelection(6,true);
+					categorySpinner.setSelection(6, true);
 					break;
 				case 6:
 					categorySpinner.setSelection(13, true);
 					break;
-				
-				
+
 				}
-				
 
 			}
 
@@ -158,13 +160,6 @@ public class MainActivity extends Activity implements View.OnClickListener,
 
 		b.show();
 
-		/*
-		 * AlertDialog ad = new AlertDialog.Builder(this) .setItems(favorites,
-		 * this) .setTitle("Favorites Menu")
-		 * .setMessage("Choose one of your favorites") .setCancelable(true)
-		 * .setPositiveButton("Yes", this) .setNegativeButton("No", this)
-		 * .create(); ad.show();
-		 */
 	}
 
 	@Override

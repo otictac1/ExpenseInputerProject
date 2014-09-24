@@ -1,31 +1,43 @@
 package com.mongoose.studios.expenses;
 
+import java.io.BufferedReader;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
+import java.util.concurrent.ExecutionException;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
 import android.content.DialogInterface;
 import android.content.DialogInterface.OnClickListener;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.telephony.SmsManager;
 import android.telephony.TelephonyManager;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 public class MainActivity extends Activity implements View.OnClickListener,
 		DialogInterface.OnClickListener {
 
-	private Button balanceButton, submitButton;
 	private Spinner financialInstitution, categorySpinner;
 	private EditText amountToEnter, vendorToEnter;
 	private ImageButton favoritesButton;
-	String szImei;
-	String phoneNumber;
+	private String szImei;
+	private String phoneNumber;
 	AlertDialog ad;
+	String balance;
+	TextView abtv;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -40,51 +52,26 @@ public class MainActivity extends Activity implements View.OnClickListener,
 		getActionBar().setBackgroundDrawable(
 				new ColorDrawable(getResources().getColor(
 						android.R.color.holo_blue_dark)));
+		getActionBar().setDisplayShowTitleEnabled(false);
+
+		try {
+			balance = new getBalance().execute().get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
 
 		if (szImei.equals("99000259209404")) {
 			phoneNumber = "4155285867";
-			setTitle("Hello Bradley.  Expense Please");
 		} else {
 			phoneNumber = "4152374146";
-			setTitle("Hello LJ! I love you! Expense Please: ");
 		}
 
 		financialInstitution = (Spinner) findViewById(R.id.financialInstitutionSpinner);
 		categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
 		amountToEnter = (EditText) findViewById(R.id.amountEditText);
 		vendorToEnter = (EditText) findViewById(R.id.vendorEditText);
-
-		balanceButton = (Button) findViewById(R.id.balanceCheckButton);
-		balanceButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				String message = "Balance";
-				sendSMS(message);
-
-			}
-		});
-
-		submitButton = (Button) findViewById(R.id.submitExpenseButton);
-		submitButton.setOnClickListener(new View.OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				String message = String.valueOf(financialInstitution
-						.getSelectedItem())
-						+ ","
-						+ amountToEnter.getText().toString().trim()
-						+ ","
-						+ vendorToEnter.getText().toString().trim()
-						+ ","
-						+ String.valueOf(categorySpinner.getSelectedItem());
-				sendSMS(message);
-				amountToEnter.setText(null);
-				vendorToEnter.setText(null);
-				financialInstitution.setSelection(0);
-				categorySpinner.setSelection(0);
-			}
-		});
 
 		favoritesButton = (ImageButton) findViewById(R.id.favoritesIB);
 		favoritesButton.setOnClickListener(this);
@@ -166,5 +153,94 @@ public class MainActivity extends Activity implements View.OnClickListener,
 	public void onClick(DialogInterface dialog, int which) {
 		dialog.cancel();
 
+	}
+
+	private class getBalance extends AsyncTask<Void, Void, String> {
+		String url = "https://dl.dropboxusercontent.com/u/110160094/balance_information/balance.txt";
+
+		@Override
+		protected String doInBackground(Void... params) {
+			return (getOnline(url));
+
+		}
+	}
+
+	public String getOnline(String urlString) {
+		URLConnection feedUrl;
+		try {
+			feedUrl = new URL(urlString).openConnection();
+			InputStream is = feedUrl.getInputStream();
+
+			BufferedReader reader = new BufferedReader(new InputStreamReader(
+					is, "UTF-8"));
+			StringBuilder sb = new StringBuilder();
+			String line = null;
+
+			while ((line = reader.readLine()) != null) {
+				sb.append(line + "");
+			}
+			is.close();
+
+			return sb.toString();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	@Override
+	public boolean onCreateOptionsMenu(Menu menu) {
+		// Inflate the menu; this adds items to the action bar if it is present.
+		abtv = new TextView(this);
+		abtv.setText(getString(R.string.balance) + " " + balance);
+		abtv.setPadding(5, 0, 10, 0);
+		abtv.setTypeface(null, Typeface.BOLD);
+		abtv.setTextColor(Color.WHITE);
+		abtv.setTextSize(13);
+		menu.add(0, 1, 1, R.string.balance).setActionView(abtv)
+				.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+		getMenuInflater().inflate(R.menu.main, menu);
+		return true;
+	}
+
+	@Override
+	public boolean onOptionsItemSelected(MenuItem item) {
+		// Handle action bar item clicks here. The action bar will
+		// automatically handle clicks on the Home/Up button, so long
+		// as you specify a parent activity in AndroidManifest.xml.
+		int id = item.getItemId();
+		if (id == R.id.action_settings) {
+
+			if (amountToEnter.getText().toString().trim().equals("")
+					|| vendorToEnter.getText().toString().trim().equals("")) {
+				Toast.makeText(this, "Please Enter All Required Information",
+						Toast.LENGTH_LONG).show();
+			}
+
+			else {
+				String message = String.valueOf(financialInstitution
+						.getSelectedItem())
+						+ ","
+						+ amountToEnter.getText().toString().trim()
+						+ ","
+						+ vendorToEnter.getText().toString().trim()
+						+ ","
+						+ String.valueOf(categorySpinner.getSelectedItem());
+				sendSMS(message);
+				balance = String.valueOf(Double.parseDouble(balance)
+						- Double.parseDouble(amountToEnter.getText().toString()
+								.trim()));
+				abtv.setText(getString(R.string.balance) + " " + balance);
+				amountToEnter.setText(null);
+				vendorToEnter.setText(null);
+				financialInstitution.setSelection(0);
+				categorySpinner.setSelection(0);
+			}
+
+			return true;
+		}
+		return super.onOptionsItemSelected(item);
 	}
 }

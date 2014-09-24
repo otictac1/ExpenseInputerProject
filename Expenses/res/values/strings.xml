@@ -36,5 +36,6 @@
     
     <string name="BalanceButton">Check Balance</string>
     <string name="SubmitButton">Submit Expense</string>
+    <string name="balance">BALANCE: </string>
 
 </resources>

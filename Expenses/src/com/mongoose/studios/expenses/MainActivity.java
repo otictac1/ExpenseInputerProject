@@ -144,6 +144,9 @@ public class MainActivity extends Activity implements View.OnClickListener,
 				case 12:
 					categorySpinner.setSelection(6,true);
 					break;
+				case 6:
+					categorySpinner.setSelection(13, true);
+					break;
 				
 				
 				}

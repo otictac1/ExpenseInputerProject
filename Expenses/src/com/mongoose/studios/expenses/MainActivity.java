@@ -48,9 +48,7 @@ public class MainActivity extends Activity implements View.OnClickListener,
 
 		TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 		szImei = TelephonyMgr.getDeviceId();
-		//getActionBar().setIcon(
-				//new ColorDrawable(getResources().getColor(
-					//	android.R.color.transparent)));
+		getActionBar().setIcon(R.drawable.launch_icon2);
 		getActionBar().setBackgroundDrawable(
 				new ColorDrawable(getResources().getColor(
 						android.R.color.holo_blue_dark)));
@@ -92,7 +90,7 @@ public class MainActivity extends Activity implements View.OnClickListener,
 					}
 				});
 
-		amountToEnter = (EditText) findViewById(R.id.amountEditText);		
+		amountToEnter = (EditText) findViewById(R.id.amountEditText);
 		vendorToEnter = (EditText) findViewById(R.id.vendorEditText);
 
 		favoritesButton = (ImageButton) findViewById(R.id.favoritesIB);
@@ -268,7 +266,7 @@ public class MainActivity extends Activity implements View.OnClickListener,
 							+ Double.parseDouble(amountToEnter.getText()
 									.toString().trim()));
 				}
-				
+
 				sendSMS(message);
 				abtv.setText(getString(R.string.balance) + " " + balance);
 				amountToEnter.setText(null);

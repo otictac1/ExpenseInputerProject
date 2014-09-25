@@ -21,6 +21,8 @@ import android.telephony.TelephonyManager;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.Spinner;
@@ -46,9 +48,9 @@ public class MainActivity extends Activity implements View.OnClickListener,
 
 		TelephonyManager TelephonyMgr = (TelephonyManager) getSystemService(TELEPHONY_SERVICE);
 		szImei = TelephonyMgr.getDeviceId();
-		getActionBar().setIcon(
-				new ColorDrawable(getResources().getColor(
-						android.R.color.transparent)));
+		//getActionBar().setIcon(
+				//new ColorDrawable(getResources().getColor(
+					//	android.R.color.transparent)));
 		getActionBar().setBackgroundDrawable(
 				new ColorDrawable(getResources().getColor(
 						android.R.color.holo_blue_dark)));
@@ -67,10 +69,30 @@ public class MainActivity extends Activity implements View.OnClickListener,
 		} else {
 			phoneNumber = "4152374146";
 		}
-
-		financialInstitution = (Spinner) findViewById(R.id.financialInstitutionSpinner);
 		categorySpinner = (Spinner) findViewById(R.id.categorySpinner);
-		amountToEnter = (EditText) findViewById(R.id.amountEditText);
+		financialInstitution = (Spinner) findViewById(R.id.financialInstitutionSpinner);
+		financialInstitution
+				.setOnItemSelectedListener(new OnItemSelectedListener() {
+
+					@Override
+					public void onItemSelected(AdapterView<?> parent,
+							View view, int position, long id) {
+						if (position == 2) {
+							categorySpinner.setEnabled(false);
+						} else {
+							categorySpinner.setEnabled(true);
+						}
+
+					}
+
+					@Override
+					public void onNothingSelected(AdapterView<?> parent) {
+						// TODO Auto-generated method stub
+
+					}
+				});
+
+		amountToEnter = (EditText) findViewById(R.id.amountEditText);		
 		vendorToEnter = (EditText) findViewById(R.id.vendorEditText);
 
 		favoritesButton = (ImageButton) findViewById(R.id.favoritesIB);
@@ -103,7 +125,7 @@ public class MainActivity extends Activity implements View.OnClickListener,
 		b.setTitle("Favorite Places to Shop");
 
 		// Need to add an icon
-		b.setIcon(null);
+		b.setIcon(R.drawable.launch_icon2);
 
 		b.setNegativeButton("Cancel", this);
 		b.setCancelable(true);
@@ -191,7 +213,7 @@ public class MainActivity extends Activity implements View.OnClickListener,
 	}
 
 	@Override
-	public boolean onCreateOptionsMenu(Menu menu) {		
+	public boolean onCreateOptionsMenu(Menu menu) {
 		abtv = new TextView(this);
 		abtv.setText(getString(R.string.balance) + " " + balance);
 		abtv.setPadding(5, 0, 10, 0);
@@ -205,8 +227,9 @@ public class MainActivity extends Activity implements View.OnClickListener,
 	}
 
 	@Override
-	public boolean onOptionsItemSelected(MenuItem item) {		
+	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
+		String message;
 		if (id == R.id.action_settings) {
 
 			if (amountToEnter.getText().toString().trim().equals("")
@@ -216,23 +239,43 @@ public class MainActivity extends Activity implements View.OnClickListener,
 			}
 
 			else {
-				String message = String.valueOf(financialInstitution
-						.getSelectedItem())
-						+ ","
-						+ amountToEnter.getText().toString().trim()
-						+ ","
-						+ vendorToEnter.getText().toString().trim()
-						+ ","
-						+ String.valueOf(categorySpinner.getSelectedItem());
+
+				if (categorySpinner.isEnabled()) {
+
+					message = String.valueOf(financialInstitution
+							.getSelectedItem())
+							+ ","
+							+ amountToEnter.getText().toString().trim()
+							+ ","
+							+ vendorToEnter.getText().toString().trim()
+							+ ","
+							+ String.valueOf(categorySpinner.getSelectedItem());
+					balance = String.valueOf(Double.parseDouble(balance)
+							- Double.parseDouble(amountToEnter.getText()
+									.toString().trim()));
+
+				}
+
+				else {
+
+					message = String.valueOf(financialInstitution
+							.getSelectedItem())
+							+ ","
+							+ amountToEnter.getText().toString().trim()
+							+ ","
+							+ vendorToEnter.getText().toString().trim();
+					balance = String.valueOf(Double.parseDouble(balance)
+							+ Double.parseDouble(amountToEnter.getText()
+									.toString().trim()));
+				}
+				
 				sendSMS(message);
-				balance = String.valueOf(Double.parseDouble(balance)
-						- Double.parseDouble(amountToEnter.getText().toString()
-								.trim()));
 				abtv.setText(getString(R.string.balance) + " " + balance);
 				amountToEnter.setText(null);
 				vendorToEnter.setText(null);
 				financialInstitution.setSelection(0);
 				categorySpinner.setSelection(0);
+
 			}
 
 			return true;

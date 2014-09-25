@@ -20,6 +20,8 @@
             android:layout_marginBottom="7dp"
             android:layout_marginTop="15dp"
             android:gravity="center"
+            
+            android:selectAllOnFocus="true"
             android:hint="@string/valueHint"
             android:inputType="numberDecimal" />
     </LinearLayout>
@@ -35,6 +37,7 @@
             android:id="@+id/vendorEditText"
             android:layout_width="250dp"
             android:layout_height="wrap_content"
+            android:selectAllOnFocus="true"
             android:gravity="center"
             android:hint="@string/vendorHint" />
 

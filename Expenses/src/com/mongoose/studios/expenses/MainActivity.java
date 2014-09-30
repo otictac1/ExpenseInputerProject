@@ -3,9 +3,12 @@ package com.mongoose.studios.expenses;
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.net.URL;
 import java.net.URLConnection;
 import java.util.concurrent.ExecutionException;
+
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
@@ -113,6 +116,21 @@ public class MainActivity extends Activity implements View.OnClickListener,
 	}
 
 	@Override
+	protected void onResume() {
+		// TODO Auto-generated method stub
+		super.onResume();
+		try {
+			balance = new getBalance().execute().get();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		} catch (ExecutionException e) {
+			e.printStackTrace();
+		}
+		invalidateOptionsMenu();
+
+	}
+
+	@Override
 	public void onClick(View v) {
 		final String[] favorites = { "Kroger", "Weigel's", "Target", "Amazon",
 				"Chick-Fil-A", "Food City", "Lowes", "Subway", "Shell",
@@ -143,6 +161,8 @@ public class MainActivity extends Activity implements View.OnClickListener,
 					categorySpinner.setSelection(8, true);
 					break;
 				case 1:
+					categorySpinner.setSelection(9, true);
+					break;
 				case 8:
 					categorySpinner.setSelection(3, true);
 					break;
@@ -213,7 +233,7 @@ public class MainActivity extends Activity implements View.OnClickListener,
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		abtv = new TextView(this);
-		abtv.setText(getString(R.string.balance) + " " + balance);
+		abtv.setText(getString(R.string.balance) + " $" + balance);
 		abtv.setPadding(5, 0, 10, 0);
 		abtv.setTypeface(null, Typeface.BOLD);
 		abtv.setTextColor(Color.WHITE);
@@ -248,9 +268,10 @@ public class MainActivity extends Activity implements View.OnClickListener,
 							+ vendorToEnter.getText().toString().trim()
 							+ ","
 							+ String.valueOf(categorySpinner.getSelectedItem());
-					balance = String.valueOf(Double.parseDouble(balance)
-							- Double.parseDouble(amountToEnter.getText()
-									.toString().trim()));
+					balance = String.valueOf(round(
+							Double.parseDouble(balance)
+									- Double.parseDouble(amountToEnter
+											.getText().toString().trim()), 2));
 
 				}
 
@@ -262,13 +283,14 @@ public class MainActivity extends Activity implements View.OnClickListener,
 							+ amountToEnter.getText().toString().trim()
 							+ ","
 							+ vendorToEnter.getText().toString().trim();
-					balance = String.valueOf(Double.parseDouble(balance)
-							+ Double.parseDouble(amountToEnter.getText()
-									.toString().trim()));
+					balance = String.valueOf(round(
+							Double.parseDouble(balance)
+									+ Double.parseDouble(amountToEnter
+											.getText().toString().trim()), 2));
 				}
 
 				sendSMS(message);
-				abtv.setText(getString(R.string.balance) + " " + balance);
+				abtv.setText(getString(R.string.balance) + " $" + balance);
 				amountToEnter.setText(null);
 				vendorToEnter.setText(null);
 				financialInstitution.setSelection(0);
@@ -279,5 +301,14 @@ public class MainActivity extends Activity implements View.OnClickListener,
 			return true;
 		}
 		return super.onOptionsItemSelected(item);
+	}
+
+	public static double round(double value, int places) {
+		if (places < 0)
+			throw new IllegalArgumentException();
+
+		BigDecimal bd = new BigDecimal(value);
+		bd = bd.setScale(places, RoundingMode.HALF_UP);
+		return bd.doubleValue();
 	}
 }
